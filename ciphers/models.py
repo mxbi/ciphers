@@ -1,6 +1,7 @@
 import re
 import numpy as np
 
+
 class IsEnglish_v1:
 	def __init__(self):
 		import tensorflow.keras as k
