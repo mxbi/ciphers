@@ -55,9 +55,27 @@ def chi_squared(text):
 
 	total = 0
 
-	for (letter, observed) in counts:
+	for (letter, observed) in counts.items():
 		expected = frequencies[letter] * len(text)
 		difference = observed - expected
 		total += difference * difference / expected
 
 	return total
+
+
+# Returns a sliding window of length n over the input
+# eg sliding('abcdef', 2) returns a generator which yields ['ab', 'bc', 'cd', 'de', 'ef']
+def sliding(seq, n):
+	window = seq[:n]
+
+	# if length of string is less than n don't yield anything
+	if len(window) == n:
+		yield window
+
+	for elem in seq[n:]:
+		window = window[1:]
+		if type(seq) is str:
+			window += elem
+		else:
+			window.append(elem)
+		yield window
