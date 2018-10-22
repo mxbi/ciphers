@@ -32,15 +32,16 @@ class IsEnglish_v1:
 			left = np.random.randint(0, window_max_pos)
 			batch_x.append(text[left:left+100])
 
-		return np.array(batch_x)
+		return batch_x
 
 	def predict(self, text, n_samples=16):
 		batch_x = self._preprocess_input(self._clean_input(text), n_samples)
-		ps = self.model.predict_on_batch(batch_x)
+		ps = self.model.predict_on_batch(np.array(batch_x))
 		return np.mean(ps)
 
-	# def predict_multiple(self, texts, n_samples=16):
-	# 	batch_x = []
-	# 	for text in texts:
-	# 		batch_x += self._preprocess_input(self._clean_input(text), n_samples)
-	# 	ps = self.model.predict_on_batch(batch_x)
+	def predict_multiple(self, texts, n_samples=16):
+		batch_x = []
+		for text in texts:
+			batch_x.extend(self._preprocess_input(self._clean_input(text), n_samples))
+		ps = self.model.predict_on_batch(np.array(batch_x))
+		return [p.mean() for p in np.array_split(ps, len(texts))]
