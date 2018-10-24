@@ -1,5 +1,7 @@
 from functools import reduce
 
+from . import models
+
 alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
 frequencies = {
@@ -31,8 +33,10 @@ frequencies = {
 	'z': 0.00074,
 }
 
+is_english_model = models.IsEnglish_v1()
 
-# Euclid's algorithm to find gcd of a list of numbers
+
+# Repeated application of Euclid's algorithm to find gcd of a list of numbers
 def gcd(*args):
 
 	# gcd of two numbers
@@ -50,6 +54,8 @@ def letter_counts(text):
 	return dict((letter, text.count(letter)) for letter in alphabet)
 
 
+# How much does the text's letter frequencies match up with the expected frequencies of English?
+# Returns a number between 0 and infinity. Lower means more like English frequencies.
 def chi_squared(text):
 	counts = letter_counts(text)
 
@@ -65,17 +71,23 @@ def chi_squared(text):
 
 # Returns a sliding window of length n over the input
 # eg sliding('abcdef', 2) returns a generator which yields ['ab', 'bc', 'cd', 'de', 'ef']
+# Works on both lists and strings
 def sliding(seq, n):
+	# Take first n elements of the sequence
 	window = seq[:n]
 
-	# if length of string is less than n don't yield anything
+	# If length of string is less than n don't yield anything...
 	if len(window) == n:
-		yield window
+		yield window  # ...otherwise, yield the first n elements as the first window
 
+	# For each remaining element...
 	for elem in seq[n:]:
-		window = window[1:]
+		window = window[1:]  # ...remove the first element of the window...
+
+		# ...and add a new element
 		if type(seq) is str:
 			window += elem
 		else:
 			window.append(elem)
-		yield window
+
+		yield window  # Yield the new window, slid along by one element
